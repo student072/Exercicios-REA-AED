@@ -1,5 +1,4 @@
 #include <stdio.h>
-/*mudar exercicio na lista para exibir os dados*/
 struct pessoa{
     char nome[50];
     int idade;

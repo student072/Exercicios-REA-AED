@@ -2,33 +2,34 @@
 #include <stdlib.h>
 #include <conio.h>
 
-/*definição da estrutura que representará  cada elemento da árvore binária
-   será uma árvore que armazenará inteiros*/
-struct ARVORE{
-	int num;
-	struct ARVORE *esq, *dir; /*ponteiros para fazer a ligação entre nós a esquerda e a direita*/
-};
-typedef struct ARVORE Arvore;
+		/*definição da estrutura que representará  cada elemento da árvore binária
+		   será uma árvore que armazenará inteiros*/
+		struct ARVORE{
+			int num;
+			struct ARVORE *esq, *dir; /*ponteiros para fazer a ligação entre nós a esquerda e a direita*/
+		};
+		typedef struct ARVORE Arvore;
 
-/*definição do estrutura que irá representar cada elemento da árvore em um pilha*/
-struct PILHA{
-	struct ARVORE *num;
-	struct PILHA *prox;
-};
-typedef struct PILHA Pilha;
+		/*definição do estrutura que irá representar cada elemento da árvore em um pilha*/
+		struct PILHA{
+			struct ARVORE *num;
+			struct PILHA *prox;
+		};
+		typedef struct PILHA Pilha;
 
-/*ponteiro que irá apontar para a raiz da árvore, inicialamente ela está vazia, logo aponta para NULL*/
-Arvore *raiz = NULL;
 
-/*ponteiros auxiliares*/
-Arvore *aux;
-Arvore *aux1;
-Arvore *novo;
-Arvore *anterior;
+		/*ponteiro que irá apontar para a raiz da árvore, inicialmente ela está vazia, logo aponta para NULL*/
+		Arvore *raiz = NULL;
 
-/*ponteiros para utilização da pilha*/
-Pilha *topo;
-Pilha *aux_pilha;
+		/*ponteiros auxiliares*/
+		Arvore *aux;
+		Arvore *aux1;
+		Arvore *novo;
+		Arvore *anterior;
+
+		/*ponteiros para utilização da pilha*/
+		Pilha *topo;
+		Pilha *aux_pilha;
 
 
 void insere_elemento(){
@@ -110,7 +111,7 @@ void consulta_no(){
 /*consulta em ordem mostra os nós na seguinte ordem
 	1° ramo da esquerda
 	2° raiz
-	3° ramo da direita													*/
+	3° ramo da direita	*/
 void consulta_arvore_ordem(){
 	/*caso a árvore esteja vazia*/
 	if(raiz == NULL){
@@ -139,7 +140,7 @@ void consulta_arvore_ordem(){
 			if(topo != NULL){
 				aux_pilha = topo;
 				printf("%d ", aux_pilha->num->num);
-				/*caso aja um elemento a direita do elemento apontado por topo na árvore, seu prox será NULL, portanto ao encontrar 
+				/*caso aja um elemento a direita do elemento apontado por topo na árvore, seu prox será NULL, portanto ao encontrar
 				um elemento a direita do elemento impresso retornaremos ao while anterior antes de imprimir o restante da pilha*/
 				aux = topo->num->dir;
 				topo = topo->prox;
@@ -153,7 +154,7 @@ void consulta_arvore_ordem(){
 /*consulta em pré-ordem mostra os nós na seguinte ordem
 	1° raiz
 	2° ramo da esquerda
-	3° ramo da direita													*/
+	3° ramo da direita	*/
 void consulta_arvore_pre_ordem(){
 	/*caso a árvore esteja vazia*/
 	if(raiz == NULL){
@@ -183,13 +184,16 @@ void consulta_arvore_pre_ordem(){
 				topo = topo->prox;
 				/*aux aponta para o elemento a direita de topo na árvore*/
 				aux = aux_pilha->num->dir;
-
-
+				free(aux_pilha);
 			}
 		}while(topo != NULL || aux != NULL);
 	}
 	getch();
 }
+/*consulta em pós-ordem mostra os nós na seguinte ordem
+	1° ramo da esquerda
+	2° ramo da dreita
+	3° raiz */
 void consulta_arvore_pos_ordem(){
 	/*caso a árvore esteja vazia*/
 	if(raiz == NULL){
@@ -282,7 +286,6 @@ void remove_elemento(){
 				}else{
 					aux = aux->dir;
 				}
-
         }
 		/*caso o número não seja encontrado*/
         if(achou == 0){
