@@ -17,6 +17,8 @@ No *fim = NULL;
 /*necessitaremos também de dois ponteiros auxilares *aux e *ant */
 No *aux;
 No *anterior;
+
+
 void insere_inicio_lista(){
     /*a cada inserção alocamos dinamicamente um espaço para um novo nó*/
     No *novo =(No*) malloc(sizeof(No));
