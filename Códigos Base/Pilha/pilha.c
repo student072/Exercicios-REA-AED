@@ -2,29 +2,42 @@
 #include <stdlib.h>
 #include <conio.h>
 
-
 /*registro que reprensentará cada elemento da pilha*/
-struct PILHA{
+struct Elemento{
 	int num;
-	struct PILHA *prox;
+	struct Elemento *prox;
 };
-typedef struct PILHA Pilha;
-/*a pilha inicia-se vazia, portanto seu topo é igual a NULL*/
- Pilha *topo = NULL;
- /*ponteiro auxiliar*/
- Pilha *aux ;
+typedef struct Elemento Elemento;
 
- 
- /*todo elemento será inserido no topo da pilha*/
-void insere_elemento(){
+/*registro do tipo Pilha contento um ponteiro "topo" do tipo Elemento para controlar a pilha*/
+struct Pilha{
+    struct Elemento *topo;/*aponta para o elemento qu esta Elemento topo da pilha*/
+};
+typedef struct Pilha Pilha;
+
+ /*ponteiro auxiliar*/
+ Elemento *aux ;
+
+ Pilha* cria_pilha(){
+	/*alocação do ponteiro pi para controlar a pilha*/
+    Pilha* pi = (Pilha*) malloc(sizeof(Pilha));
+    if(pi != NULL){
+        pi->topo= NULL;  /*a pilha inicia-se vazia, portanto seu topo é igual a NULL*/
+    }
+    return pi;
+}
+
+
+/*todo elemento será inserido no topo da pilha*/
+void insere_elemento(Pilha *pi){
 	/*a cada inserção alocamos dinamicamente um espaço para um novo elemento*/
-	Pilha *novo =(Pilha*) malloc(sizeof(Pilha));
+	Elemento *novo =(Elemento*) malloc(sizeof(Elemento));
 	printf("Digite o numero a ser inserido na pilha: ");
 	scanf("%d",&novo->num);
 	/*como o número inserido será o novo topo, ele apontará para o topo atual que será o segundo elemento da pilha*/
-	novo->prox = topo;
+	novo->prox = pi->topo;
 	/*topo aponta para o endereço de novo*/
-	topo = novo;
+	pi->topo = novo;
 	printf("\nNumero inserido na pilha!");
 	getch();
 }
@@ -32,13 +45,13 @@ void insere_elemento(){
 
 
 /*os elementos da pilha serão mostrados do último inserido(topo) ao primeiro*/
-void consulta_pilha(){
+void consulta_pilha(Pilha *pi){
 	/*caso a pilha esteja vazia*/
-	if(topo == NULL){
+	if(pi->topo == NULL){
 		printf("\nPilha Vazia!!");
 	/*caso a pilha não esteja vazia*/
 	}else{
-		aux = topo;
+		aux = pi->topo;
 		do{
 			printf(" %d ", aux->num);
 			aux = aux->prox;
@@ -48,15 +61,14 @@ void consulta_pilha(){
 }
 
 
-
 /*o elemento a ser removido será sempre o topo(último elemento inserido)*/
-void remove_elemento_pilha(){
-	if(topo == NULL){
+void remove_elemento_pilha(Pilha *pi){
+	if(pi->topo == NULL){
 		printf("\nPilha Vazia!!");
 	}else{
-		aux = topo;
-		printf("%d removido!", topo->num);
-		topo = topo->prox;
+		aux = pi->topo;
+		printf("%d removido!", pi->topo->num);
+		pi->topo = pi->topo->prox;
 		free(aux);
 	}
 	getch();
@@ -65,15 +77,15 @@ void remove_elemento_pilha(){
 
 
 /*a pilha será esvaziada e o espaço ocupado por ela será desalocado*/
-void esvazia_pilha(){
-	if(topo == NULL){
+void esvazia_pilha(Pilha *pi){
+	if(pi->topo == NULL){
 		printf("\nPilha Vazia!!");
 	}else{
-		aux = topo;
+		aux = pi->topo;
 		do{
-			topo = topo->prox;
+			pi->topo = pi->topo->prox;
 			free(aux);
-			aux = topo;
+			aux = pi->topo;
 		}while(aux != NULL);
 		printf("\nPilha Esvaziada!!");
 	}
@@ -82,6 +94,7 @@ void esvazia_pilha(){
 
 int main(){
     int op;
+	Pilha *pi = cria_pilha();
     while(1){
         system("CLS");
         printf("\nEscolha a opcao desejada ");
@@ -92,16 +105,16 @@ int main(){
         scanf("%d",&op);
         switch(op){
         case 1:
-            insere_elemento();
+            insere_elemento(pi);
             break;
         case 2:
-            consulta_pilha();
+            consulta_pilha(pi);
             break;
         case 3:
-            remove_elemento_pilha();
+            remove_elemento_pilha(pi);
             break;
         case 4:
-            esvazia_pilha();
+            esvazia_pilha(pi);
             break;
         default:
             exit(1);

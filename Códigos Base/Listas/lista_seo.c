@@ -6,33 +6,44 @@ struct No{
     int num;
     struct No *prox;
 };
-/*para toda hora não precisarmos escrever "struct No" vamos definir
-o tipo No através de typedef para simplificar*/
 typedef struct No No;
-/*toda lista tem um inicio e fim, para isso declaramos dois ponteiros do tipo No para apontar para os
-  os nós que estarão no iniício e fim da lista respectivamente.
-  Como a lista está inicialmente vazia, inicio aponta para NULL */
-No *inicio = NULL;
-No *fim = NULL;  /*Em uma lista simplesmente encadeada o ultimo elemento sempre aponta para NULL */
-/*necessitaremos também de dois ponteiros auxilares *aux e *ant * para as operações da lista*/
+
+/*registro do tipo Lista contento dois ponteiros do tipo nó para controlar a lista*/
+struct Lista{
+    struct No *inicio; /*aponta para o elemento do início da lista*/
+    struct No *fim; /*aponta para o elemento do fim da lista*/
+};
+typedef struct Lista Lista;
+
+/*necessitaremos também de dois ponteiros auxilares *aux e *ant */
 No *aux;
 No *anterior;
 
-void insere_lista(){
+Lista* cria_lista(){
+	/*alocação do ponteiro li para controlar a lista*/
+    Lista* li = (Lista*) malloc(sizeof(Lista));
+    if(li != NULL){
+		/*Se a lista está inicialmente vazia, inicio e fim apontam para NULL */
+        li->fim = NULL;
+        li->inicio = NULL;
+    }
+    return li;
+}
+void insere_lista(Lista *li){
     /*a cada inserção alocamos dinamicamente um espaço para um novo nó*/
     No *novo =(No*) malloc(sizeof(No));
     /*o número a ser inserido será armazenado em novo->num*/
     printf("\nDigite o no a ser inserido na lista: ");
     scanf("%d",&novo->num);
     /*caso a lista estiver vazia o primeiro elemento a ser inserido será o primeiro e último*/
-    if(inicio == NULL){
-        inicio = novo;/*aqui fazemos com que inicio aponte para o mesmo endereço que novo aponta*/
-        fim = novo;/*aqui fazemos com que fim aponte para o mesmo endereço que novo aponta*/
-        fim->prox = NULL;/*aqui fazemos com que o endereço para o qual fim aponta, no atributo prox receba NULL*/
+    if(li->inicio == NULL){
+        li->inicio = novo;/*aqui fazemos com que inicio aponte para o mesmo endereço que novo aponta*/
+        li->fim = novo;/*aqui fazemos com que fim aponte para o mesmo endereço que novo aponta*/
+        li->fim->prox = NULL;/*aqui fazemos com que o endereço para o qual fim aponta, no atributo prox receba NULL*/
 	/*caso a lista não esteja vazia*/
     }else{
         anterior = NULL; /*inicialmente anterior apontará para NULL*/
-        aux = inicio; /*aux aponta para o primeiro elemento da lista*/
+        aux = li->inicio; /*aux aponta para o primeiro elemento da lista*/
 		/*enquanto aux apontar para um nó existente  e o número inserido for maior que o número apontado por aux,
 		a variação do valor de aux fará com que o novo número possa ser inseirido no local adequado, que é antes de um número maior que ele.*/
         while(aux != NULL && novo->num > aux->num){
@@ -41,13 +52,13 @@ void insere_lista(){
         }
 		/*caso não exista nenhum número menor que o novo número*/
         if(anterior == NULL){
-            novo->prox = inicio;/*o novo elemento no atributo prox, apontará para o elemento que até então era o primeiro elemento da lista*/
-            inicio = novo;/*novo será o primeiro elemento da lista, inicio apontará para o endereço de novo*/
+            novo->prox = li->inicio;/*o novo elemento no atributo prox, apontará para o elemento que até então era o primeiro elemento da lista*/
+            li->inicio = novo;/*novo será o primeiro elemento da lista, inicio apontará para o endereço de novo*/
 		/*caso não exista nenhum número maior que o novo número*/
         }else if(aux == NULL){
-            fim->prox = novo;/* o até então ultimo elemento da lista no atributo prox apontará para novo*/
-            fim = novo;/*novo será o ultimo elemento da lista, fim apontará para o endereço de novo*/
-            fim->prox = NULL;/*aqui fazemos com que o endereço para o qual fim aponta, no atributo prox receba NULL*/
+            li->fim->prox = novo;/* o até então ultimo elemento da lista no atributo prox apontará para novo*/
+            li->fim = novo;/*novo será o ultimo elemento da lista, fim apontará para o endereço de novo*/
+            li->fim->prox = NULL;/*aqui fazemos com que o endereço para o qual fim aponta, no atributo prox receba NULL*/
 		/*caso número precise ser inseirido no meio da lista*/
         }else{
             anterior->prox = novo;/*o primeiro número menor que o novo inseirido no atributo prox recebe o endereço de novo*/
@@ -58,14 +69,14 @@ void insere_lista(){
     getch();
 }
 
-void imprime_lista(){
+void imprime_lista(Lista *li){
     /*caso a lista esteja vazia*/
-    if(inicio == NULL){
+    if(li->inicio == NULL){
         printf("\nLista Vazia!!");
     /*caso a lista não esteja vazia*/
     }else{
         /*utilizando o ponteiro aux,  fazemos com ele aponte para o mesmo endereço que inicio aponta*/
-        aux = inicio;
+        aux = li->inicio;
         do{
             /*impressão do elemento que aux aponta*/
             printf(" %d ", aux->num);
@@ -76,19 +87,19 @@ void imprime_lista(){
     }
     getch();
 }
-void remover_elemento(){
+void remover_elemento(Lista *li){
     int numero;
     /*a variável achou será utilizada como um contador de números removidos*/
     int achou;
     /*caso a lista esteja vazia*/
-    if(inicio == NULL){
+    if(li->inicio == NULL){
         printf("\nLista Vazia!!");
     /*caso a lista não esteja vazia*/
     }else{
         printf("Digite o elemento a ser removido: ");
         scanf("%d", &numero);
         /*utilizando o ponteiro aux,  fazemos com ele aponte para o mesmo endereço que inicio aponta*/
-        aux = inicio;
+        aux = li->inicio;
         /*utilizando o ponteiro ele,  fazemos com ele aponte para NULL*/
         anterior = NULL;
         achou = 0;
@@ -98,20 +109,20 @@ void remover_elemento(){
                 /*incrementamos achou*/
                 achou = achou + 1;
                 /*se o elemento a ser removido for o primeiro da lista*/
-                if(aux == inicio){
+                if(aux == li->inicio){
                     /*inicio apontará para o segundo elemento da lista ou para NULL
                       caso o elemento removido seja o único elemento da lista*/
-                    inicio = aux ->prox;
+                    li->inicio = aux ->prox;
                     /*desalocamos o espaço para onde aux apontava*/
                     free(aux);
                     /*aux aponta para o inicio da lista*/
-                    aux = inicio;
+                    aux = li->inicio;
                     /*se o elemento a ser removido for o último da lista*/
-                }else if (aux == fim){
+                }else if (aux == li->fim){
                     /*o elemento anterior a fim, no atributo prox apontará para NULL*/
                     anterior->prox = NULL;
                     /*fim aponta para o elemento apontado por anterior*/
-                    fim = anterior;
+                    li->fim = anterior;
                     /*desalocamos o espaço para onde aux apontava*/
                     free(aux);
                     /*como era o últmo elemento da lista, aux recebe NULL*/
@@ -142,21 +153,21 @@ void remover_elemento(){
     }
     getch();
 }
-void esvaziar_lista(){
+void esvaziar_lista(Lista *li){
     /*caso a lista esteja vazia*/
-    if(inicio == NULL){
+    if(li->inicio == NULL){
         printf("\nLista Vazia!!");
     /*caso a lista não esteja vazia*/
     }else{
         /*utilizando o ponteiro aux,  fazemos com ele aponte para o mesmo endereço de inicio  aponta*/
-        aux = inicio;
+        aux = li->inicio;
         do{
             /*inicio apontará para o próximo elemento da lista*/
-            inicio = inicio->prox;
+            li->inicio = li->inicio->prox;
             /*desalocamos o espaço para onde aux apontava*/
             free(aux);
             /*aux apontará para o mesmo endereço que inicio aponta*/
-            aux = inicio;
+            aux = li->inicio;
             /*essa operação será feita até aux ser diferente de NULL, ou seja, não houverem mais elementos a serem removidos*/
         }while(aux != NULL);
         printf("\nLista Esvaziada!!");
@@ -166,6 +177,7 @@ void esvaziar_lista(){
 
 int main(){
     int op;
+	Lista *li = cria_lista();
     while(1){
         system("CLS");
         printf("\nEscolha a opcao desejada: ");
@@ -177,16 +189,16 @@ int main(){
         scanf("%d",&op);
         switch(op){
         case 1:
-            insere_lista();
+            insere_lista(li);
             break;
         case 2:
-            imprime_lista();
+            imprime_lista(li);
             break;
         case 3:
-            remover_elemento();
+            remover_elemento(li);
             break;
         case 4:
-            esvaziar_lista();
+            esvaziar_lista(li);
             break;
         case 5:
             exit(0);
